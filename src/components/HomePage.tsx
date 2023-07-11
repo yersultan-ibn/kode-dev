@@ -6,18 +6,22 @@ import { NotFound } from "./NotFound/NotFound";
 import { UserDetails } from "./UserList/UserDetails/UserDetails";
 import { usersAll } from "../redux/users-slice";
 import { useSelector } from "react-redux";
+import { NetworkStatus } from "./NavigationBar/NetworkStatus/NetworkStatus";
 
-const Container = styled.div`
+export const Container = styled.div`
   max-width: 1440px;
   margin: 0 auto;
 `;
 
 const UserListPage = () => {
   return (
-    <Container>
-      <NavigationBar />
-      <UserList />
-    </Container>
+    <>
+      <NetworkStatus />
+      <Container>
+        <NavigationBar />
+        <UserList />
+      </Container>
+    </>
   );
 };
 

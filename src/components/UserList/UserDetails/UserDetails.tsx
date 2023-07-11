@@ -11,6 +11,7 @@ import { ThunkDispatch } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import { loadUsers } from "../../../redux/users-slice";
 import { useEffect } from "react";
+import { NetworkStatus } from "../../NavigationBar/NetworkStatus/NetworkStatus";
 
 const Arrow = styled(MdOutlineKeyboardArrowLeft)`
   font-size: 30px;
@@ -91,7 +92,6 @@ export const UserDetails = () => {
   const usersAll = useSelector((state: any) => state.users.users.list);
   const user = usersAll.find((item: any) => item.id === userId);
 
-  
   useEffect(() => {
     dispatch(loadUsers());
   }, []);
@@ -134,6 +134,7 @@ export const UserDetails = () => {
 
   return (
     <>
+      <NetworkStatus />
       <Top>
         <Container>
           <Link to="/">

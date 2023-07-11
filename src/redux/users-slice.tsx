@@ -32,6 +32,7 @@ interface UserState {
   error: null | boolean | unknown;
   list: Array<UserItem>;
   filteredList: Array<UserItem>; // Новое поле для отфильтрованного списка
+  filteredUserList: Array<UserItem>; // Добавленное поле для сохранения фильтрации
 }
 
 const initialState: UserState = {
@@ -39,6 +40,7 @@ const initialState: UserState = {
   error: null,
   list: [],
   filteredList: [], // Инициализация пустым списком
+  filteredUserList: [],
 };
 
 export const usersSlice = createSlice({
@@ -47,6 +49,34 @@ export const usersSlice = createSlice({
   reducers: {
     setFilteredList: (state, action: PayloadAction<Array<UserItem>>) => {
       state.filteredList = action.payload;
+      state.filteredUserList = action.payload; // Сохранение фильтрованного списка
+    },
+    resetFilteredList: (state) => {
+      state.filteredList = state.list;
+      state.filteredUserList = state.list; // Сброс фильтрованного списка
+    },
+    filterByAlphabeticalSort: (state, action: PayloadAction<boolean>) => {
+      if (action.payload) {
+        // Отфильтровать список пользователей по алфавиту
+        state.filteredList = state.list.sort((a, b) =>
+          a.firstName.localeCompare(b.firstName)
+        );
+      } else {
+        // Сбросить фильтр по алфавиту
+        state.filteredList = [];
+      }
+    },
+    filterByBirthdaySort: (state, action: PayloadAction<boolean>) => {
+      if (action.payload) {
+        // Отфильтровать список пользователей по дню рождения
+        state.filteredList = state.list.sort(
+          (a, b) =>
+            new Date(a.birthday).getTime() - new Date(b.birthday).getTime()
+        );
+      } else {
+        // Сбросить фильтр по дню рождения
+        state.list = [];
+      }
     },
   },
   extraReducers: (builder) => {
@@ -67,7 +97,11 @@ export const usersSlice = createSlice({
 
 export const usersAll = (state: any) => state.users.list;
 
-export const { setFilteredList } = usersSlice.actions;
+export const {
+  filterByAlphabeticalSort,
+  filterByBirthdaySort,
+  setFilteredList,
+} = usersSlice.actions;
 export const usersReducer = usersSlice.reducer;
 
 export const selectUsers = (state: any) => state.users.list;

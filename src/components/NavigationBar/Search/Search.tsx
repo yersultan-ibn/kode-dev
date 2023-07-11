@@ -4,7 +4,12 @@ import { CiMenuFries } from "react-icons/ci";
 import { GrFormClose } from "react-icons/gr";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { UserItem, setFilteredList } from "../../../redux/users-slice";
+import {
+  UserItem,
+  filterByAlphabeticalSort,
+  filterByBirthdaySort,
+  setFilteredList,
+} from "../../../redux/users-slice";
 import { debounce } from "lodash";
 const InputWrapper = styled.div`
   position: relative;
@@ -121,6 +126,18 @@ export const Search = () => {
   const [searchValue, setSearchValue] = useState(" ");
 
   const filteredList = useSelector((state: any) => state.users.filteredList);
+  const user = userList.find((item: any) => item.id);
+  const [alphabeticalSort, setAlphabeticalSort] = useState(false);
+  const [birthdaySort, setBirthdaySort] = useState(false);
+
+  // console.log("user", user);
+  const handleAlphabeticalSort = () => {
+    dispatch(filterByAlphabeticalSort(!alphabeticalSort));
+  };
+
+  const handleBirthdaySort = () => {
+    dispatch(filterByBirthdaySort(!birthdaySort));
+  };
 
   const searchUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -169,11 +186,11 @@ export const Search = () => {
             <ModalClose onClick={handleModal}>x</ModalClose>
           </ModalTop>
           <Tab>
-            <Checkbox />
+            <Checkbox onClick={() => handleAlphabeticalSort()}/>
             <TabName>По алфавиту</TabName>
           </Tab>
           <Tab>
-            <Checkbox />
+            <Checkbox onClick={() => handleBirthdaySort()}/>
             <TabName>По дню рождения</TabName>
           </Tab>
         </Modal>
