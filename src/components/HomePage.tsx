@@ -11,6 +11,7 @@ const Container = styled.div`
   max-width: 1440px;
   margin: 0 auto;
 `;
+
 const UserListPage = () => {
   return (
     <Container>
@@ -19,12 +20,13 @@ const UserListPage = () => {
     </Container>
   );
 };
+
 export const HomePage = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<UserListPage />} />
-        <Route path="/user-details" element={<UserDetails />} />
+        <Route path="/user-details/:userId" element={<UserDetails />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

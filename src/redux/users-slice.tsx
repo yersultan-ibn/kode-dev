@@ -2,6 +2,7 @@ import {
   PayloadAction,
   createAction,
   createAsyncThunk,
+  createSelector,
   createSlice,
 } from "@reduxjs/toolkit";
 
@@ -20,7 +21,7 @@ export interface UserItem {
 export const loadUsers = createAsyncThunk(
   "@@users/load-users",
   async (_, { extra: { client } }: any) => {
-    const url = `https://stoplight.io/mocks/kode-frontend-team/koder-stoplight/86566464/users?__dynamic=true`;
+    const url = `https://stoplight.io/mocks/kode-frontend-team/koder-stoplight/86566464/users?__example=all`;
     const response = await client.get(url);
     return response.data.items;
   }
@@ -63,7 +64,17 @@ export const usersSlice = createSlice({
       });
   },
 });
-export const { setFilteredList } = usersSlice.actions; // Export the setFilteredList action creator
 
-export const usersReducer = usersSlice.reducer;
 export const usersAll = (state: any) => state.users.list;
+
+export const { setFilteredList } = usersSlice.actions;
+export const usersReducer = usersSlice.reducer;
+
+export const selectUsers = (state: any) => state.users.list;
+
+export const selectFilteredUsers = (state: any) => state.users.filteredList;
+
+export const selectFilteredUsersByDepartment = (department: any) =>
+  createSelector(selectFilteredUsers, (users: any) =>
+    users.filter((user: any) => user.department === department)
+  );

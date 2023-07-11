@@ -1,5 +1,6 @@
 import { styled } from "styled-components";
 import avatar from "../../../images/avatar.png";
+import icon from "../../../images/plug.png";
 
 const UserWrapper = styled.div`
   margin-top: 30px;
@@ -54,7 +55,13 @@ export const User: React.FC<UserProps> = ({
 }) => {
   return (
     <UserWrapper>
-      <UserImg src={avatarUrl} />
+      <UserImg
+        src={
+          avatarUrl === "https://api.lorem.space/image/face?w=120&h=120"
+            ? icon
+            : ""
+        }
+      />
       <UserTextWrapper>
         <UserNameWrapper>
           <UserName>

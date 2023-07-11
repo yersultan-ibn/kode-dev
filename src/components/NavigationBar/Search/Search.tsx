@@ -5,7 +5,7 @@ import { GrFormClose } from "react-icons/gr";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { UserItem, setFilteredList } from "../../../redux/users-slice";
-
+import { debounce } from "lodash";
 const InputWrapper = styled.div`
   position: relative;
 `;
@@ -112,28 +112,33 @@ const Checkbox = styled.input.attrs({ type: "checkbox" })`
 
 const TabName = styled.p``;
 
-// interface SearchProps {
-//   userList: UserItem[]; // Replace 'UserItem' with the actual type of the 'userList' prop
-// }
-
 export const Search = () => {
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch();
 
   const usersAll = useSelector((state: any) => state.users.users);
   const userList = usersAll.list;
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState(" ");
 
+  const filteredList = useSelector((state: any) => state.users.filteredList);
 
   const searchUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setSearchValue(value);
 
-    const filteredList = userList.filter((user: UserItem) =>
-      user.firstName.toLowerCase().includes(value.toLowerCase())
-    );
+    const debouncedSearchUser = debounce(() => {
+      const filteredList = userList.filter(
+        (user: UserItem) =>
+          user.firstName.toLowerCase().includes(value.toLowerCase()) ||
+          user.lastName.toLowerCase().includes(value.toLowerCase()) ||
+          user.department.toLowerCase().includes(value.toLowerCase())
+      );
+      dispatch(setFilteredList(filteredList));
+    }, 1000);
 
-    dispatch(setFilteredList(filteredList));
+    debouncedSearchUser();
+
+    return debouncedSearchUser.cancel;
   };
 
   const handleModal = () => {
@@ -150,7 +155,11 @@ export const Search = () => {
     <>
       <InputWrapper>
         <SearchIcon />
-        <Input onChange={searchUser} placeholder="Введите имя, тег, почту..." />
+        <Input
+          onChange={searchUser}
+          value={searchValue}
+          placeholder="Введите имя, тег, почту..."
+        />
         <MenuIcon onClick={handleModal} />
       </InputWrapper>
       <ModalWrapper show={showModal}>
